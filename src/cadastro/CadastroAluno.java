@@ -94,7 +94,7 @@ public class CadastroAluno extends JFrame implements ActionListener {
             String senha = new String(txtSenha.getPassword());
 
             // Simula autenticação
-            if (usuario.equals("admin") && senha.equals("admin")) {
+            if (usuario.equals("Fabio") && senha.equals("123")) {
                 setTitle("Cadastro de Alunos");
                 getContentPane().remove(panelLogin);
                 getContentPane().add(panelAlunos);
