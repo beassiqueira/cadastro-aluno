@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -219,28 +221,49 @@ class CadastroNovoAluno extends JFrame implements ActionListener {
         add(panelCadastro);
     }
     
+    public static boolean validarFormatoData(String data) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false); // Definir como estrito para evitar datas inválidas como 31 de fevereiro
+
+        try {
+            sdf.parse(data);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnCadastrar) {
             String nome = txtNome.getText();
             String curso = txtCurso.getText();
             String serie = txtSerie.getText();
-            String dataNascimento = txtDataNascimento.getText(); // DD/mm/aaaa
+            String dataNascimento = txtDataNascimento.getText();
             String responsavel = txtResponsavel.getText();
             
             //TODO: Validar Formato de data
-            
-            //TODO: Validar Data de nacimento
-            
-            // Validar os dados antes de cadastrar
-            if (!nome.isEmpty() && !curso.isEmpty() && !serie.isEmpty() && !dataNascimento.isEmpty()) {
-                Aluno novoAluno = new Aluno(nome, curso, serie, dataNascimento, responsavel);
-                telaPrincipal.adicionarAluno(novoAluno);
-                JOptionPane.showMessageDialog(this, "Aluno cadastrado com sucesso!");
-                dispose(); // Fecha a tela de cadastro após cadastrar
+            if(validarFormatoData(dataNascimento)) {
+            	            	
+            	//TODO: Validar Data de nacimento
+            	
+            	 // Validar os dados antes de cadastrar
+                if (!nome.isEmpty() && !curso.isEmpty() && !serie.isEmpty() && !dataNascimento.isEmpty()) {
+                    Aluno novoAluno = new Aluno(nome, curso, serie, dataNascimento, responsavel);
+                    telaPrincipal.adicionarAluno(novoAluno);
+                    JOptionPane.showMessageDialog(this, "Aluno cadastrado com sucesso!");
+                    dispose(); // Fecha a tela de cadastro após cadastrar
+                } else {
+                    JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos obrigatórios.");
+                } 
+                
             } else {
-                JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos obrigatórios.");
-            } 
+            	JOptionPane.showMessageDialog(this, "Data de nascimento inválida, coloque no formato: dd/MM/yyyy");
+            }
+            
+            
+            
+           
         }
     }
 }
