@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,9 +115,9 @@ public class CadastroAluno extends JFrame implements ActionListener {
 
     private void carregarAlunos() {
         // Simula dados
-        alunos.add(new Aluno("João", "Matemática", "3º Ano", "10/05/2000", "Maria"));
-        alunos.add(new Aluno("Maria", "Português", "2º Ano", "15/09/2001", ""));
-        alunos.add(new Aluno("Pedro", "História", "1º Ano", "20/12/1999", ""));
+        alunos.add(new Aluno("Raianne", "TI", "2º Ano", "10/05/2007", "Maria"));
+        alunos.add(new Aluno("Maria", "Eletro", "2º Ano", "15/09/2001", ""));
+        alunos.add(new Aluno("Pedro", "TI", "1º Ano", "20/12/1999", ""));
   
 
         for (Aluno aluno : alunos) {
@@ -221,6 +224,18 @@ class CadastroNovoAluno extends JFrame implements ActionListener {
         add(panelCadastro);
     }
     
+    public static boolean validaAutorizacaoIdade (String data, String responsavel) {
+    	
+    	if (validarFormatoData(data)) {
+        	if (isMenorQue18Anos(data) && responsavel.isEmpty()) {
+        		return false;
+        	}
+    	} else {
+    		return false;
+    	}
+    	return true;    	   	
+    }
+    
     public static boolean validarFormatoData(String data) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sdf.setLenient(false); // Definir como estrito para evitar datas inválidas como 31 de fevereiro
@@ -233,6 +248,34 @@ class CadastroNovoAluno extends JFrame implements ActionListener {
         }
     }
     
+    public static boolean isMenorQue18Anos(String dataString) {
+    	
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");  	    	 
+        
+        try {
+            // Fazendo o parsing da string para um objeto LocalDate
+            LocalDate dataNascimento = LocalDate.parse(dataString, formatter);
+            
+            // Obtendo a data atual
+            LocalDate dataAtual = LocalDate.now();
+            
+            // Calculando a diferença de anos entre a data atual e a data de nascimento
+            Period periodo = Period.between(dataNascimento, dataAtual);
+                    
+            // Verificando se a pessoa tem menos de 18 anos
+            if (periodo.getYears() < 18) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao fazer parsing da data: " + e.getMessage());
+        }
+		return false;
+    	
+      
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnCadastrar) {
@@ -242,12 +285,10 @@ class CadastroNovoAluno extends JFrame implements ActionListener {
             String dataNascimento = txtDataNascimento.getText();
             String responsavel = txtResponsavel.getText();
             
-            //TODO: Validar Formato de data
-            if(validarFormatoData(dataNascimento)) {
-            	            	
-            	//TODO: Validar Data de nacimento
+            //Validar Formato de data e idade
+            if(validaAutorizacaoIdade(dataNascimento, responsavel)) {
             	
-            	 // Validar os dados antes de cadastrar
+            	// Validar os dados antes de cadastrar
                 if (!nome.isEmpty() && !curso.isEmpty() && !serie.isEmpty() && !dataNascimento.isEmpty()) {
                     Aluno novoAluno = new Aluno(nome, curso, serie, dataNascimento, responsavel);
                     telaPrincipal.adicionarAluno(novoAluno);
@@ -256,12 +297,10 @@ class CadastroNovoAluno extends JFrame implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos obrigatórios.");
                 } 
-                
+            	         
             } else {
-            	JOptionPane.showMessageDialog(this, "Data de nascimento inválida, coloque no formato: dd/MM/yyyy");
-            }
-            
-            
+            	JOptionPane.showMessageDialog(this, "Data em formato invalido, formato: dd/MM/yyyy ou -18, preencher responsável");
+            }   
             
            
         }
