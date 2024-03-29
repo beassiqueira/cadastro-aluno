@@ -16,4 +16,15 @@ IDE:
 ## Autores
 
 - [@beassiqueira](https://github.com/beassiqueira)
+- [@raianne1](https://github.com/raianne1)
+
+  
+## Run
+
+- Método main class: `Principal`
+
+## Login
+
+- Usuário: Fabio
+- Senha: 123
 
